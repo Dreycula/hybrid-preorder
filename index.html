@@ -109,24 +109,24 @@
     <img src="image.png" alt="Logo" class="logo">
     <h1>HYBRID</h1>
     <div class="tagline">Stay different.</div>
-    <form id="preorder-form">
-      <label for="name">Name</label>
-      <input type="text" name="name" id="name" placeholder="Enter your name" required />
+   <form id="preorder-form">
+  <label for="name">Name</label>
+  <input type="text" name="name" id="name" placeholder="Enter your name" required />
 
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" placeholder="Enter your email" required />
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" placeholder="Enter your email" required />
 
-      <label for="phone">Phone (optional)</label>
-      <input type="tel" name="phone" id="phone" placeholder="Enter your phone" />
+  <label for="phone">Phone (optional)</label>
+  <input type="tel" name="phone" id="phone" placeholder="Enter your phone" />
 
-      <label for="receipt">Upload Payment Receipt</label>
-      <input type="file" name="receipt" id="receipt" accept="image/*" />
+  <label for="receipt">Upload Payment Receipt</label>
+  <input type="file" name="receipt" id="receipt" accept="image/*" />
 
-      <label for="message">Message (optional)</label>
-      <textarea name="message" id="message" rows="4" placeholder="Any message..."></textarea>
+  <label for="message">Message (optional)</label>
+  <textarea name="message" id="message" rows="4" placeholder="Any message..."></textarea>
 
-      <button type="submit">Submit Pre-Order</button>
-    </form>
+  <button type="submit">Submit Pre-Order</button>
+</form>
   </div>
 
   <!-- Tawk.to Live Chat -->
@@ -143,45 +143,44 @@
   </script>
 
   <script>
-    document.getElementById("preorder-form").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const form = e.target;
-      const fileInput = form.receipt.files[0];
+  document.getElementById("preorder-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const fileInput = form.receipt.files[0];
 
-      let receiptURL = "N/A";
+    let receiptURL = "N/A";
 
-      // Optional: Integrate with cloud storage for the file and get receiptURL
-      if (fileInput) {
-        alert("Note: File uploads are not supported directly to Google Sheets. Please upload to a cloud service and paste link in message.");
+    if (fileInput) {
+      alert("Note: File uploads aren't supported directly via Google Sheets. Upload it to Google Drive or similar and share the link manually.");
+      // Optionally use third-party upload logic
+    }
+
+    const data = {
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      message: form.message.value,
+      receipt: receiptURL
+    };
+
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxKz0tjQLpdjUInEejGUd3ieyRQ1Xxy2QfprAWtOahVG1eKYEgz92vJvqa8JbZ1L3Mg/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert("Form submitted successfully!");
+        form.reset();
+      } else {
+        alert("There was an error. Try again.");
       }
-
-      const data = {
-        name: form.name.value,
-        email: form.email.value,
-        phone: form.phone.value,
-        message: form.message.value,
-        receipt: receiptURL
-      };
-
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxKz0tjQLpdjUInEejGUd3ieyRQ1Xxy2QfprAWtOahVG1eKYEgz92vJvqa8JbZ1L3Mg/exec", {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-
-        if (response.ok) {
-          alert("Form submitted successfully!");
-          form.reset();
-        } else {
-          alert("Error submitting form.");
-        }
-      } catch (err) {
-        alert("Submission failed.");
-      }
-    });
-  </script>
+    } catch (error) {
+      alert("Submission failed.");
+    }
+  });
+</script>
+  
 </body>
 </html>
